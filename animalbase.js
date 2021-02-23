@@ -22,6 +22,8 @@ function start( ) {
 
 function registerButtons() {
     document.querySelectorAll("[data-action='filter']").forEach(button => button.addEventListener("click", selectFilter));
+
+    document.querySelectorAll("[data-action='sort']").forEach(button => button.addEventListener("click", selectSort));
 }
 
 async function loadJSON() {
@@ -59,10 +61,10 @@ function selectFilter(event) {
 
 function filterList(filterBy) {
     let filteredList = allAnimals;
-    if (animalType === "cat") {
+    if (filterBy === "cat") {
     //create a filter of only cats
     filteredList = allAnimals.filter(isCat);
-    } else if (animalType === "dog") {
+    } else if (filterBy === "dog") {
     filteredList = allAnimals.filter(isDog);
 }
  
@@ -75,6 +77,43 @@ function isCat(animal) {
 
 function isDog(animal) {
     return animal.type === "dog";
+}
+
+function selectSort(event) {
+    const sortBy = event.target.dataset.sort;
+    console.log(`User selected ${sortBy}`);
+    sortList(sortBy);
+}
+
+
+function sortList(sortBy) {
+    let sortedList = allAnimals;
+
+    if (sortBy === "name") {
+        sortedList = sortedList.sort(sortByName);
+    } else if (sortBy === "type") {
+        sortedList = sortedList.sort(sortByType);
+    }
+
+    displayList(sortedList); 
+}
+
+//if animalA's name comes before animalB then it should return 1
+//otherwise it should return -1
+function sortByName(animalA,animalB) {
+    if (animalA.name < animalB.name) {
+        return -1;
+    } else {
+        return 1;
+    }
+}
+
+function sortByType(animalA,animalB) {
+    if (animalA.type < animalB.type) {
+        return -1;
+    } else {
+        return 1;
+    }
 }
 
 
