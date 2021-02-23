@@ -9,7 +9,8 @@ const Animal = {
     name: "",
     desc: "-unknown animal-",
     type: "",
-    age: 0
+    age: 0,
+    star: false
 };
 
 const settings = {
@@ -40,11 +41,14 @@ async function loadJSON() {
     prepareObjects( jsonData );
 }
 
+//NYT
 function prepareObjects( jsonData ) {
     allAnimals = jsonData.map( preapareObject );
 
     // TODO: This might not be the function we want to call first
-    displayList(allAnimals);
+    //fixed so we filter and sort on the first load
+    buildList();
+    //displayList(allAnimals);
 }
 
 function preapareObject( jsonObject ) {
@@ -66,7 +70,6 @@ function selectFilter(event) {
     setFilter(filter);
 }
 
-//nyt
 function setFilter(filter){
     settings.filterBy = filter; //sets global variable
     buildList()
@@ -163,6 +166,7 @@ function displayList(animals) {
     animals.forEach( displayAnimal );
 }
 
+//NYT
 function displayAnimal( animal ) {
     // create clone
     const clone = document.querySelector("template#animal").content.cloneNode(true);
@@ -172,6 +176,24 @@ function displayAnimal( animal ) {
     clone.querySelector("[data-field=desc]").textContent = animal.desc;
     clone.querySelector("[data-field=type]").textContent = animal.type;
     clone.querySelector("[data-field=age]").textContent = animal.age;
+
+    if (animal.star === true){
+        clone.querySelector("[data-field=star]").textContent = "⭐";
+    } else {
+        clone.querySelector("[data-field=star]").textContent = "☆";
+    }
+
+    function clickStar() {
+        if(animal.star === true) {
+            animal.star = false;
+        } else {
+            animal.star = true;
+        }
+
+        buildList(); //updating the list view
+    }
+
+    clone.querySelector("[data-field=star]").addEventListener("click", clickStar);
 
     // append clone to list
     document.querySelector("#list tbody").appendChild( clone );
