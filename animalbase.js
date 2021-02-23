@@ -12,6 +12,12 @@ const Animal = {
     age: 0
 };
 
+const settings = {
+    filter: "all",
+    sortBy: "name",
+    sortDir: "asc"
+}
+
 function start( ) {
     console.log("ready");
 
@@ -56,19 +62,26 @@ function preapareObject( jsonObject ) {
 function selectFilter(event) {
     const filter = event.target.dataset.filter;
     console.log(`User selected ${filter}`);
-    filterList(filter);
+    //filterList(filter);
+    setFilter(filter);
 }
 
-function filterList(filterBy) {
-    let filteredList = allAnimals;
-    if (filterBy === "cat") {
+//nyt
+function setFilter(filter){
+    settings.filterBy = filter; //sets global variable
+    buildList()
+}
+
+function filterList(filteredList) {
+    //let filteredList = allAnimals;
+    if (settings.filterBy === "cat") {
     //create a filter of only cats
     filteredList = allAnimals.filter(isCat);
-    } else if (filterBy === "dog") {
+    } else if (settings.filterBy === "dog") {
     filteredList = allAnimals.filter(isDog);
 }
  
-displayList(filteredList);   
+return filteredList;   
 }
 
 function isCat(animal) {
@@ -94,51 +107,46 @@ function selectSort(event) {
 
 
     console.log(`User selected ${sortBy} - ${sortDir}`);
-    sortList(sortBy, sortDir);
+    setSort(sortBy, sortDir);
+}
+
+function setSort(sortBy, sortDir) {
+    settings.sortBy = sortBy;
+    settings.sortDir = sortDir;
+    buildList();
+
 }
 
 //we are sorting by.. what was clicked
-function sortList(sortBy, sortDir) {
-    let sortedList = allAnimals;
+function sortList(sortedList) { 
+    //let sortedList = allAnimals;
     let direction = 1; // 1 is normal direction.
-    if(sortDir === "desc") {
+    if(settings.sortDir === "desc") {
         direction = -1;
     } else {
-        direction: 1;
+        settings.direction = 1;
     }
     // if (sortBy === "name") {
         sortedList = sortedList.sort(sortByProperty);
 
-        
-    // } else if (sortBy === "type") {
-    //     sortedList = sortedList.sort(sortByType);
-    // }
-
-    //if animalA's name comes before animalB then it should return 1
-//otherwise it should return -1
-//skal være indeni , da den bruger sortby 
-
 
     function sortByProperty(animalA,animalB) {
-     console.log(`sortBy is ${sortBy}`);
-        if (animalA[sortBy] < animalB[sortBy]) {
+    //  console.log(`sortBy is ${sortBy}`);
+        if (animalA[settings.sortBy] < animalB[settings.sortBy]) {
             return -1 * direction;
         } else {
             return 1 * direction;
         }
     }
-    displayList(sortedList); 
+    return sortedList; 
 }
 
-// function sortByType(animalA,animalB) {
-//     console.log(`sortBy is ${sortBy}`);
-//     if (animalA.type < animalB.type) {
-//         return -1;
-//     } else {
-//         return 1;
-//     }
-// }
+function buildList() {
+    const currentList = filterList(allAnimals);
+    const sortedList = sortList(currentList); //sortedlist is the sortet version of the current list
 
+    displayList (sortedList);
+}
 
 function displayList(animals) {
     // clear the list
